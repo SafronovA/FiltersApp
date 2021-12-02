@@ -12,18 +12,6 @@ import Firebase
 
 class AddImageViewController: UIViewController {
     
-    //    private let ref = Database.database().reference(withPath: "image-items")
-    //    private var refObservers: [DatabaseHandle] = []
-    
-//    private let imageView: UIImageView = {
-//        let im = UIImageView()
-//        im.translatesAutoresizingMaskIntoConstraints = false
-//        im.contentMode = .scaleAspectFill
-//        im.clipsToBounds = true
-//        im.layer.cornerRadius = 12
-//        return im
-//    }()
-    
     private let fromGaleryButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -84,6 +72,14 @@ class AddImageViewController: UIViewController {
     @objc func downloadImage(sender: UIButton!) {
         print("downloadButton tapped")
         
+        let ac = UIAlertController(title: "Hello!", message: "This is a test.", preferredStyle: .actionSheet)
+//        present(ac, animated: true)
+        let popover = ac.popoverPresentationController
+        popover?.sourceView = view
+        popover?.sourceRect = CGRect(x: 32, y: 32, width: 64, height: 164)
+
+        present(ac, animated: true)
+        
         DispatchQueue.global().async {
             print("downloadImage - STARTED")
             
@@ -110,7 +106,7 @@ class AddImageViewController: UIViewController {
         let vc = UIImagePickerController()
         vc.sourceType = .photoLibrary
         vc.delegate = self
-        vc.allowsEditing = true
+                vc.allowsEditing = true
         self.present(vc, animated: true)
     }
 }
@@ -118,9 +114,9 @@ class AddImageViewController: UIViewController {
 extension AddImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
-            //            imageView.image = image
-            print("OPEN FiltersViewController")
+        print("didFinishPickingMediaWithInfo \(info)")
+                if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+//        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerOriginalImage")] as? UIImage {
             let vc: FiltersViewController = FiltersViewController(image: image)
             self.navigationController?.pushViewController(vc, animated: true)
         }

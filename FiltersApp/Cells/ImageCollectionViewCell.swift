@@ -9,10 +9,10 @@ import UIKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    static let reuseIdentifier = "Cell"
+    static let reuseIdentifier = "ImageCell"
     
-    let imageView: UIImageView = {
-        let im = UIImageView()
+    let imageView: CustomImageView = {
+        let im = CustomImageView()
         im.translatesAutoresizingMaskIntoConstraints = false
         im.contentMode = .scaleAspectFill
         im.clipsToBounds = true
@@ -30,18 +30,18 @@ class ImageCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func loadImage(url: URL){
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        guard let self = self else {return}
-                        self.imageView.image = image
-                    }
-                }
-            }
-        }
-    }
+//    func loadImage(url: URL){
+//        DispatchQueue.global().async { [weak self] in
+//            if let data = try? Data(contentsOf: url) {
+//                if let image = UIImage(data: data) {
+//                    DispatchQueue.main.async {
+//                        guard let self = self else {return}
+//                        self.imageView.image = image
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     private func setupConstraints(){
         imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
@@ -61,18 +61,5 @@ class ImageCollectionViewCell: UICollectionViewCell {
 //    }
 //}
 
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        guard let self = self else {return}
-                        self.image = image
-                    }
-                }
-            }
-        }
-    }
-}
+
 

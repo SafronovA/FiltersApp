@@ -1,5 +1,5 @@
 //
-//  ImagesViewController.swift
+//  ImagesCollectionViewController.swift
 //  FiltersApp
 //
 //  Created by Aliaksei Safronau EPAM on 10.11.21.
@@ -9,15 +9,15 @@ import UIKit
 import Firebase
 import SwiftUI
 
-class ImagesViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    // MARK: Constants
-    private let ref = Database
-        .database(url: "https://filtersapp-d0e43-default-rtdb.europe-west1.firebasedatabase.app")
-        .reference(withPath: "image-items")
-    private var refObservers: [DatabaseHandle] = []
+private let imagesCache = NSCache<NSString, UIImage>()
+
+class ImagesCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    // MARK: Properties
-    var items: [ImageItem] = []
+    private let ref = Database
+        .database(url: FirebaseConstants.databaseUrl)
+        .reference(withPath: FirebaseConstants.pathToImageItems)
+    private var refObservers: [DatabaseHandle] = []
+    private var items: [ImageItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +25,11 @@ class ImagesViewController: UICollectionViewController, UICollectionViewDelegate
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(ImageCollectionViewCell.self,
                                 forCellWithReuseIdentifier: ImageCollectionViewCell.reuseIdentifier)
-//        fillInDB();
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+//        fillInDB();
         DispatchQueue.global().async { [weak self] in
             guard let self = self else {return}
             let completed = self.ref
@@ -60,17 +60,8 @@ class ImagesViewController: UICollectionViewController, UICollectionViewDelegate
     
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.reuseIdentifier, for: indexPath) as! ImageCollectionViewCell        
-//        DispatchQueue.global().async { [weak self, weak cell] in
-//            guard let self = self else {return}
-//            guard let cell = cell else {return}
-//            let image = UIImage(url: URL(string: self.items[indexPath.section].url)!)
-//            DispatchQueue.main.async { [weak cell] in
-//                guard let cell = cell else {return}
-//                cell.imageView.image = image
-//            }
-//        }
-        cell.loadImage(url: URL(string: self.items[indexPath.section].url)!)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
+        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.section].url)
         return cell;
     }
     
@@ -81,18 +72,20 @@ class ImagesViewController: UICollectionViewController, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        guard let image = UIImage(url: URL(string: items[indexPath.section].url)!) else {
-//            return .zero
-//        }
-//        let heightOnWidthRatio = image.size.height / image.size.width
         let width = collectionView.bounds.width
-//        let height = width * heightOnWidthRatio
-//        return CGSize(width: width, height: height)
         return CGSize(width: width, height: width)
+        //        guard let image = UIImage(url: URL(string: items[indexPath.section].url)!) else {
+        //            return .zero
+        //        }
+        //        let heightOnWidthRatio = image.size.height / image.size.width
+        //        let height = width * heightOnWidthRatio
+        //        return CGSize(width: width, height: height)
     }
     
     private func fillInDB(){
         let imageURLs = [
+            "https://carsweek.ru/upload/iblock/bda/bda7e2beb0c69851cdc0dea4dd612b50.jpg",
+            "https://a.d-cd.net/4ee2w/960.jpg",
             "https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455__480.jpg",
             "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80",
             "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
@@ -105,6 +98,38 @@ class ImagesViewController: UICollectionViewController, UICollectionViewDelegate
             guard let self = self else {return}
             for im in imageURLs {
                 self.ref.child(UUID().uuidString).setValue(ImageItem(url: im).toAnyObject())
+            }
+        }
+    }
+}
+
+class CustomImageView: UIImageView {
+    
+    var imageUrlString: String?
+    
+    func loadImageUseingUrlString(urlString: String){
+        image = nil
+        imageUrlString = urlString
+        
+        if let imageFromCache = imagesCache.object(forKey: urlString as NSString){
+            image = imageFromCache
+        } else {
+            DispatchQueue.global().async { [weak self] in
+                guard let url = URL(string: urlString) else {return}
+                if let data = try? Data(contentsOf: url) {
+                    if let imageToCache = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            guard let self = self else {return}
+                            if(self.imageUrlString == urlString) {
+                                // MARK: fix for the common bug when wrong Image is loaded in UICollectionViewCell
+                                // For more details check "Swift: YouTube - How to Load Images Async in UICollectionView (Ep 6)"
+                                self.image = imageToCache
+                            }
+                            imagesCache.setObject(imageToCache, forKey: urlString as NSString)
+                            
+                        }
+                    }
+                }
             }
         }
     }

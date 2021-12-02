@@ -13,27 +13,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-//        window = UIWindow(windowScene: windowScene)
+        //        window = UIWindow(windowScene: windowScene)
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = self.rootViewContronner()
+//        window?.rootViewController = self.rootViewContronner()
+        window?.rootViewController = TabBarController()
         window?.makeKeyAndVisible()
     }
     
-    func rootViewContronner() -> UIViewController {
+    private func rootViewContronner() -> UIViewController {
         let tabBarController = UITabBarController()
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let imagesVC = ImagesViewController(collectionViewLayout: layout)
-        
+        let imagesVC = ImagesCollectionViewController(collectionViewLayout: layout)
         imagesVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
+        
         let addImageVC = AddImageViewController()
         addImageVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "plus.square"), tag: 0)
-        
+                
         tabBarController.viewControllers = [imagesVC, UINavigationController(rootViewController: addImageVC)]
         
         return tabBarController
     }
+    
 }
 
