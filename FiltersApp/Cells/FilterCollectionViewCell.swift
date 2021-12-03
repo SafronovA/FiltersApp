@@ -51,6 +51,5 @@ class FilterCollectionViewCell: UICollectionViewCell {
         filterLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
         filterLabel.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         filterLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
-//        filterLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
     }
 }

@@ -87,11 +87,7 @@ class FiltersViewController: UIViewController {
             let storageRef = Storage.storage().reference().child(FirebaseConstants.pathToImages).child("image\(UUID().uuidString).png")
             if let uploadData = img.pngData(){
                 storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
-                    if error != nil {
-//                        print(error)
-                        return
-                    }
-//                    print(metadata)
+                    if error != nil {                        return}
                     storageRef.downloadURL { url, error in
                         if let error = error {
                             print(error)

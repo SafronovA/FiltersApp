@@ -27,7 +27,6 @@ class FiltersCollectionViewController: UICollectionViewController, UICollectionV
     init(collectionViewLayout: UICollectionViewFlowLayout, image: UIImage){
         super.init(collectionViewLayout: collectionViewLayout)
         self.image = image
-//        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -53,10 +52,11 @@ class FiltersCollectionViewController: UICollectionViewController, UICollectionV
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.reuseIdentifier, for: indexPath) as! FilterCollectionViewCell
+        cell.imageView.image = nil
         let index = indexPath.section
         // TODO: думаю лучше загружать фильтры в кэш на этапе загрузки страницы
         if(index == 0){
-            cell.imageView.image = image
+            cell.imageView.image = self.image
             cell.filterLabel.text = "Normal"
         } else {
             let filterName = CIFilterNames[index]
@@ -67,7 +67,7 @@ class FiltersCollectionViewController: UICollectionViewController, UICollectionV
                 let filterOperation = FilterOperation()
                 filterOperation.qualityOfService = .userInitiated
                 filterOperation.filter = filterName
-                filterOperation.inputImage = image
+                filterOperation.inputImage = self.image
                 filterOperation.start()
                 guard let outputImage = filterOperation.outputImage else {return cell}
                 cell.imageView.image = outputImage

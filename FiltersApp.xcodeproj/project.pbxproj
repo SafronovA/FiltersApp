@@ -37,6 +37,7 @@
 		8E37D26F274AAB4D001C31BD /* FirebaseStorageSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 8E37D26E274AAB4D001C31BD /* FirebaseStorageSwift-Beta */; };
 		8E37D275274B9845001C31BD /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E37D274274B9845001C31BD /* ImageItem.swift */; };
 		8E4B6D5E2758CE0D0001343C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B6D5D2758CE0D0001343C /* Constants.swift */; };
+		8E4B6D60275A167D0001343C /* CustomModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B6D5F275A167D0001343C /* CustomModalViewController.swift */; };
 		8E521C08274FC5FB0019D1DC /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E521C07274FC5FB0019D1DC /* FiltersViewController.swift */; };
 		8E58BBD0273BBB28001B44D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E58BBCF273BBB28001B44D6 /* AppDelegate.swift */; };
 		8E58BBD2273BBB28001B44D6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E58BBD1273BBB28001B44D6 /* SceneDelegate.swift */; };
@@ -56,6 +57,7 @@
 		8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8E37D274274B9845001C31BD /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		8E4B6D5D2758CE0D0001343C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8E4B6D5F275A167D0001343C /* CustomModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalViewController.swift; sourceTree = "<group>"; };
 		8E521C07274FC5FB0019D1DC /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
 		8E58BBCC273BBB28001B44D6 /* FiltersApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiltersApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E58BBCF273BBB28001B44D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				8E74679B2754279200070E7F /* FiltersCollectionViewController.swift */,
 				8EE452FC2757D81800C18EF8 /* ResultViewController.swift */,
 				8EE452FE2757E4F800C18EF8 /* TabBarController.swift */,
+				8E4B6D5F275A167D0001343C /* CustomModalViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				8E37D275274B9845001C31BD /* ImageItem.swift in Sources */,
 				8E58BBD4273BBB28001B44D6 /* ImagesCollectionViewController.swift in Sources */,
 				8E521C08274FC5FB0019D1DC /* FiltersViewController.swift in Sources */,
+				8E4B6D60275A167D0001343C /* CustomModalViewController.swift in Sources */,
 				8E039AEB2744291400692441 /* ImageCollectionViewCell.swift in Sources */,
 				8E58BBD0273BBB28001B44D6 /* AppDelegate.swift in Sources */,
 				8E58BBE4273BD228001B44D6 /* AddImageViewController.swift in Sources */,
@@ -431,9 +435,10 @@
 				DEVELOPMENT_TEAM = 53SSJT7H43;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FiltersApp/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "FiltersApp photos use";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -460,9 +465,10 @@
 				DEVELOPMENT_TEAM = 53SSJT7H43;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FiltersApp/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "FiltersApp photos use";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;

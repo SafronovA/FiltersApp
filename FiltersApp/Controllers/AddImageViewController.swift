@@ -70,22 +70,9 @@ class AddImageViewController: UIViewController {
     }
     
     @objc func downloadImage(sender: UIButton!) {
-        print("downloadButton tapped")
-        
-        let ac = UIAlertController(title: "Hello!", message: "This is a test.", preferredStyle: .actionSheet)
-//        present(ac, animated: true)
-        let popover = ac.popoverPresentationController
-        popover?.sourceView = view
-        popover?.sourceRect = CGRect(x: 32, y: 32, width: 64, height: 164)
-
-        present(ac, animated: true)
-        
-        DispatchQueue.global().async {
-            print("downloadImage - STARTED")
-            
-            print("downloadImage - FINISHED")
-        }
-        
+        let vc = CustomModalViewController()
+        vc.modalPresentationStyle = .overCurrentContext
+//        self.present(vc, animated: false)
     }
     
     private func setupConstraints(){
@@ -106,7 +93,7 @@ class AddImageViewController: UIViewController {
         let vc = UIImagePickerController()
         vc.sourceType = .photoLibrary
         vc.delegate = self
-                vc.allowsEditing = true
+        vc.allowsEditing = true
         self.present(vc, animated: true)
     }
 }
@@ -115,8 +102,8 @@ extension AddImageViewController: UIImagePickerControllerDelegate, UINavigationC
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         print("didFinishPickingMediaWithInfo \(info)")
-                if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
-//        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerOriginalImage")] as? UIImage {
+        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+            //        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerOriginalImage")] as? UIImage {
             let vc: FiltersViewController = FiltersViewController(image: image)
             self.navigationController?.pushViewController(vc, animated: true)
         }
@@ -125,5 +112,11 @@ extension AddImageViewController: UIImagePickerControllerDelegate, UINavigationC
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension AddImageViewController: UIPopoverPresentationControllerDelegate {
+    public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
     }
 }
