@@ -21,15 +21,16 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .white
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(ImageCollectionViewCell.self,
-                                forCellWithReuseIdentifier: ImageCollectionViewCell.reuseIdentifier)
+        self.collectionView.backgroundColor = .white
+        self.collectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.collectionView.register(ImageCollectionViewCell.self,
+                                     forCellWithReuseIdentifier: ImageCollectionViewCell.reuseIdentifier)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        fillInDB();
+        //MARK: call fillInDB() to add initial data in Data Base
+        //        fillInDB();
         DispatchQueue.global().async { [weak self] in
             guard let self = self else {return}
             let completed = self.ref
@@ -74,12 +75,6 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
         return CGSize(width: width, height: width)
-        //        guard let image = UIImage(url: URL(string: items[indexPath.section].url)!) else {
-        //            return .zero
-        //        }
-        //        let heightOnWidthRatio = image.size.height / image.size.width
-        //        let height = width * heightOnWidthRatio
-        //        return CGSize(width: width, height: height)
     }
     
     private func fillInDB(){
@@ -126,7 +121,6 @@ class CustomImageView: UIImageView {
                                 self.image = imageToCache
                             }
                             imagesCache.setObject(imageToCache, forKey: urlString as NSString)
-                            
                         }
                     }
                 }

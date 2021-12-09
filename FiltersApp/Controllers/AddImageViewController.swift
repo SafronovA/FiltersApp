@@ -45,7 +45,6 @@ class AddImageViewController: UIViewController {
     }
     
     @objc func addImageFromGalery(sender: UIButton!) {
-        print("fromGaleryButton tapped")
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { [weak self] (status) in
             DispatchQueue.main.async { [weak self] in
                 let photos = PHPhotoLibrary.authorizationStatus()
@@ -72,7 +71,7 @@ class AddImageViewController: UIViewController {
     @objc func downloadImage(sender: UIButton!) {
         let vc = CustomModalViewController()
         vc.modalPresentationStyle = .overCurrentContext
-//        self.present(vc, animated: false)
+        self.present(vc, animated: false)
     }
     
     private func setupConstraints(){
@@ -101,7 +100,6 @@ class AddImageViewController: UIViewController {
 extension AddImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print("didFinishPickingMediaWithInfo \(info)")
         if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
             //        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerOriginalImage")] as? UIImage {
             let vc: FiltersViewController = FiltersViewController(image: image)

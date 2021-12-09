@@ -40,7 +40,7 @@ class ResultViewController: UIViewController {
         guard let img = self.imageView.image else {return}
         let activityVC = UIActivityViewController(activityItems: [img], applicationActivities: nil)
         activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(activityVC, animated: true, completion: nil)
+        self.present(activityVC, animated: true, completion: nil)
     }
     
     private func setupConstraints(){

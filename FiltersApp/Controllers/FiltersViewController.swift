@@ -58,7 +58,6 @@ class FiltersViewController: UIViewController {
             return
         }
         self.filtersView = filtersView
-        filtersView.backgroundColor = .red
         filtersView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(filtersView)
     }
