@@ -1,16 +1,15 @@
 //
-//  FilterOperation.swift
+//  DownloadImageOperation.swift
 //  FiltersApp
 //
-//  Created by Aliaksei Safronau EPAM on 29.11.21.
+//  Created by Aliaksei Safronau EPAM on 5.01.22.
 //
 
 import UIKit
 
-class FilterOperation: Operation {
-    var filter: String?
-    var inputImage: UIImage?
-    var outputImage: UIImage?
+class DownloadImageOperation: Operation {
+    var urlString: String?
+    var downloadedImage: UIImage?
     var _executing :Bool = false
     var _finished :Bool = false
     
@@ -41,9 +40,26 @@ class FilterOperation: Operation {
     
     override func main() {
         DispatchQueue.global().async {[weak self] in
-            guard let self = self else {return}
-            self.outputImage = self.filter(image: self.inputImage, filter: self.filter)
-            self.finishOperation()
+            guard
+                let self = self,
+                let urlString = self.urlString,
+                let url = URL(string: urlString)
+            else {
+                self?.finishOperation()
+                return
+            }
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                guard
+                    let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                    let data = data, error == nil,
+                    let img = UIImage(data: data)
+                else {
+                    self.finishOperation()
+                    return
+                }
+                self.downloadedImage = img
+                self.finishOperation()
+            }.resume()
         }
     }
     
@@ -54,17 +70,5 @@ class FilterOperation: Operation {
         _finished = true
         self.didChangeValue(forKey: "isExecuting")
         self.didChangeValue(forKey: "isFinished")
-    }
-    
-    private func filter(image: UIImage?, filter: String?) -> UIImage?{
-        guard let image = image, let filter = filter else { return nil }
-        let ciContext = CIContext(options: nil)
-        let coreImage = CIImage(image: image)
-        guard let filter = CIFilter(name: filter) else { return nil }
-        filter.setDefaults()
-        filter.setValue(coreImage, forKey: kCIInputImageKey)
-        let filteredImageData = filter.value(forKey:kCIOutputImageKey) as! CIImage
-        guard let filteredImageRef = ciContext.createCGImage(filteredImageData, from: filteredImageData.extent) else { return nil }
-        return UIImage(cgImage: filteredImageRef);
     }
 }

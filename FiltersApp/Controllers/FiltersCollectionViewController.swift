@@ -54,7 +54,6 @@ class FiltersCollectionViewController: UICollectionViewController, UICollectionV
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilterCollectionViewCell.reuseIdentifier, for: indexPath) as! FilterCollectionViewCell
         cell.imageView.image = nil
         let index = indexPath.section
-        // TODO: думаю лучше загружать фильтры в кэш на этапе загрузки страницы
         if(index == 0){
             cell.imageView.image = self.image
             cell.filterLabel.text = "Normal"
@@ -69,9 +68,17 @@ class FiltersCollectionViewController: UICollectionViewController, UICollectionV
                 filterOperation.filter = filterName
                 filterOperation.inputImage = self.image
                 filterOperation.start()
-                guard let outputImage = filterOperation.outputImage else {return cell}
-                cell.imageView.image = outputImage
-                filtersCache.setObject(outputImage, forKey: filterName as NSString)
+                filterOperation.completionBlock = { [weak self, weak cell] in
+                    guard
+                        let self = self,
+                        let cell = cell,
+                        let outputImage = filterOperation.outputImage
+                    else {return}
+                    DispatchQueue.main.async {
+                        cell.imageView.image = outputImage
+                    }
+                    self.filtersCache.setObject(outputImage, forKey: filterName as NSString)
+                }
             }
         }
         return cell;

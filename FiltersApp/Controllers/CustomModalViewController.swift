@@ -121,22 +121,27 @@ class CustomModalViewController: UIViewController {
         guard let urlString = self.inputField.text else {return}
         if(!urlString.isEmpty){
             self.activityIndicator.startAnimating()
-            DispatchQueue.global().async { [weak self] in
-                guard let url = URL(string: urlString) else {return}
-                guard let data = try? Data(contentsOf: url) else {
-                    print("Invalid URL")
+            let downloadImageOperation = DownloadImageOperation()
+            downloadImageOperation.qualityOfService = .userInitiated
+            downloadImageOperation.urlString = urlString
+            downloadImageOperation.start()
+            downloadImageOperation.completionBlock = { [weak self] in
+                guard
+                    let self = self,
+                    let downloadedImage = downloadImageOperation.downloadedImage
+                else {
                     DispatchQueue.main.async {
                         self?.activityIndicator.stopAnimating()
                         self?.inputField.isError(baseColor: UIColor.black.cgColor, numberOfShakes: 3, revert: true)
                     }
                     return
                 }
-                guard let image = UIImage(data: data) else {return}
-                DispatchQueue.main.async{
-                    self?.activityIndicator.stopAnimating()
-                    let vc: FiltersViewController = FiltersViewController(image: image)
-                    guard let presentingVC = self?.presentingViewController as? UINavigationController else {return}
-                    self?.animateDismissView()
+                
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    let vc: FiltersViewController = FiltersViewController(image: downloadedImage)
+                    guard let presentingVC = self.presentingViewController as? UINavigationController else {return}
+                    self.animateDismissView()
                     presentingVC.pushViewController(vc, animated: true)
                 }
             }

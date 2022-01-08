@@ -109,20 +109,22 @@ class CustomImageView: UIImageView {
         if let imageFromCache = imagesCache.object(forKey: urlString as NSString){
             image = imageFromCache
         } else {
-            DispatchQueue.global().async { [weak self] in
-                guard let url = URL(string: urlString) else {return}
-                if let data = try? Data(contentsOf: url) {
-                    if let imageToCache = UIImage(data: data) {
-                        DispatchQueue.main.async {
-                            guard let self = self else {return}
-                            if(self.imageUrlString == urlString) {
-                                // MARK: fix for the common bug when wrong Image is loaded in UICollectionViewCell
-                                // For more details check "Swift: YouTube - How to Load Images Async in UICollectionView (Ep 6)"
-                                self.image = imageToCache
-                            }
-                            imagesCache.setObject(imageToCache, forKey: urlString as NSString)
-                        }
+            let downloadImageOperation = DownloadImageOperation()
+            downloadImageOperation.qualityOfService = .userInitiated
+            downloadImageOperation.urlString = urlString
+            downloadImageOperation.start()
+            downloadImageOperation.completionBlock = { [weak self] in
+                guard
+                    let self = self,
+                    let downloadedImage = downloadImageOperation.downloadedImage
+                else {return}
+                if(self.imageUrlString == urlString) {
+                    DispatchQueue.main.async {
+                        // MARK: fix for the common bug when wrong Image is loaded in UICollectionViewCell
+                        // For more details check "Swift: YouTube - How to Load Images Async in UICollectionView (Ep 6)"
+                        self.image = downloadedImage
                     }
+                    imagesCache.setObject(downloadedImage, forKey: urlString as NSString)
                 }
             }
         }

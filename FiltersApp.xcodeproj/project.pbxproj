@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8E039AEB2744291400692441 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E039AEA2744291400692441 /* ImageCollectionViewCell.swift */; };
+		8E344E3627859CED0038979E /* DownloadImageOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E344E3527859CEC0038979E /* DownloadImageOperation.swift */; };
 		8E37D23A274AA5FE001C31BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */; };
 		8E37D23D274AAB4C001C31BD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8E37D23C274AAB4C001C31BD /* FirebaseAnalytics */; };
 		8E37D23F274AAB4C001C31BD /* FirebaseAnalyticsSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 8E37D23E274AAB4C001C31BD /* FirebaseAnalyticsSwift-Beta */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		8E039AEA2744291400692441 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		8E344E3527859CEC0038979E /* DownloadImageOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImageOperation.swift; sourceTree = "<group>"; };
 		8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8E37D274274B9845001C31BD /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		8E4B6D5D2758CE0D0001343C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */,
 				8E74679D2754328A00070E7F /* FilterOperation.swift */,
 				8E4B6D5D2758CE0D0001343C /* Constants.swift */,
+				8E344E3527859CEC0038979E /* DownloadImageOperation.swift */,
 			);
 			path = FiltersApp;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				8EE452FD2757D81800C18EF8 /* ResultViewController.swift in Sources */,
 				8E74679E2754328A00070E7F /* FilterOperation.swift in Sources */,
 				8EE452FF2757E4F800C18EF8 /* TabBarController.swift in Sources */,
+				8E344E3627859CED0038979E /* DownloadImageOperation.swift in Sources */,
 				8E74679C2754279200070E7F /* FiltersCollectionViewController.swift in Sources */,
 				8E58BBD2273BBB28001B44D6 /* SceneDelegate.swift in Sources */,
 			);

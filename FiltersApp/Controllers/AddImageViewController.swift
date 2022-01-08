@@ -60,6 +60,17 @@ class AddImageViewController: UIViewController {
                 }
                 if photos == .denied {
                     print("PERMISSION denied")
+                    let refreshAlert = UIAlertController(title: "Permission denied", message: "We don't have permission to access your photos.\nYou are unable to upload photos from Gallery until you grant this permission in iOS Settings -> Privacy -> FiltersApp", preferredStyle: UIAlertController.Style.alert)
+                    refreshAlert.addAction(UIAlertAction(title: "Open App Settings", style: .default, handler: { (action: UIAlertAction!) in
+                        let isRegisteredForRemoteNotifications = UIApplication.shared.isRegisteredForRemoteNotifications
+                        if !isRegisteredForRemoteNotifications {
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                        }
+                    }))
+                    refreshAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action: UIAlertAction!) in
+                        print("Cancel Popup")
+                    }))
+                    self?.present(refreshAlert, animated: true, completion: nil)
                 }
                 if photos == .limited {
                     print("PERMISSION limited")
