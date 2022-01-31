@@ -11,7 +11,9 @@ import SwiftUI
 
 private let imagesCache = NSCache<NSString, UIImage>()
 
-class ImagesCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class ImagesCollectionViewController: UICollectionViewController
+//, UICollectionViewDelegateFlowLayout
+{
     
     private let ref = Database
         .database(url: FirebaseConstants.databaseUrl)
@@ -21,6 +23,9 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let layout = self.collectionView?.collectionViewLayout as? PinterestLayout {
+            layout.delegate = self
+        }
         self.collectionView.backgroundColor = .white
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
         self.collectionView.register(ImageCollectionViewCell.self,
@@ -44,38 +49,42 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
                         }
                     }
                     self.items = newItems
+                    
                     self.collectionView.reloadData()
                 })
             self.refObservers.append(completed)
         }
     }
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return items.count
-    }
-    
+    //    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    //        return items.count
+    //    }
+    //
     override func collectionView(_ collectionView: UICollectionView,
                                  numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return self.items.count
     }
     
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
-        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.section].url)
+        //        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.section].url)
+        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.item].url)
         return cell;
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets.init(top: 1, left: 1, bottom: 1, right: 1)
-    }
+    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    //        return UIEdgeInsets.init(top: 1, left: 1, bottom: 1, right: 1)
+    //    }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width
-        return CGSize(width: width, height: width)
-    }
+    //    func collectionView(_ collectionView: UICollectionView,
+    //                        layout collectionViewLayout: UICollectionViewLayout,
+    //                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    ////        let width = collectionView.bounds.width
+    ////        return CGSize(width: width, height: width)
+    //        let itemSize = (collectionView.frame.width - (collectionView.contentInset.left + collectionView.contentInset.right + 10)) / 2
+    //        return CGSize(width: itemSize, height: itemSize)
+    //    }
     
     private func fillInDB(){
         let imageURLs = [
@@ -95,6 +104,47 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
                 self.ref.child(UUID().uuidString).setValue(ImageItem(url: im).toAnyObject())
             }
         }
+    }
+}
+
+extension ImagesCollectionViewController: PinterestLayoutDelegate {
+    //    private func imageDimenssions(url: String) -> String{
+    //        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
+    //            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
+    //                let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
+    //                let pixelHeight = imageProperties[kCGImagePropertyPixelHeight] as! Int
+    //                return "Width: \(pixelWidth), Height: \(pixelHeight)"
+    //            }
+    //        }
+    //        return "None"
+    //    }
+    
+//    private func imageHeight(url: String) -> CGFloat{
+//        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
+//            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
+//                return imageProperties[kCGImagePropertyPixelHeight] as! CGFloat
+//            }
+//        }
+//        return CGFloat(20)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, heightForImageAtIndexPath indexPath:IndexPath) -> CGFloat {
+//        return imageHeight(url: self.items[indexPath.item].url)
+//    }
+    
+    private func imageSize(url: String) -> CGSize{
+        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
+            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
+                return CGSize(width: imageProperties[kCGImagePropertyPixelWidth] as! CGFloat,
+                              height: imageProperties[kCGImagePropertyPixelHeight] as! CGFloat)
+            }
+        }
+        return CGSize(width: 0, height: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, sizeOfImageAtIndexPath indexPath: IndexPath) -> CGSize {
+        return imageSize(url: self.items[indexPath.item].url)
+        
     }
 }
 

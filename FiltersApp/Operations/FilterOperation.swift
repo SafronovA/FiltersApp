@@ -7,53 +7,17 @@
 
 import UIKit
 
-class FilterOperation: Operation {
+class FilterOperation: AsyncOperation {
     var filter: String?
     var inputImage: UIImage?
     var outputImage: UIImage?
-    var _executing :Bool = false
-    var _finished :Bool = false
-    
-    override var isAsynchronous: Bool{
-        return true
-    }
-    
-    override var isExecuting: Bool{
-        return _executing
-    }
-    
-    override var isFinished: Bool{
-        return _finished
-    }
-    
-    override func start() {
-        if(self.isCancelled){
-            self.willChangeValue(forKey: "isFinished")
-            _finished = true
-            self.didChangeValue(forKey: "isFinished")
-            return
-        }
-        self.willChangeValue(forKey: "isExecuting")
-        self.main()
-        _executing = true
-        self.didChangeValue(forKey: "isExecuting")
-    }
-    
+
     override func main() {
         DispatchQueue.global().async {[weak self] in
             guard let self = self else {return}
             self.outputImage = self.filter(image: self.inputImage, filter: self.filter)
-            self.finishOperation()
+            self.finish()
         }
-    }
-    
-    func finishOperation(){
-        self.willChangeValue(forKey: "isFinished")
-        self.willChangeValue(forKey: "isExecuting")
-        _executing = false
-        _finished = true
-        self.didChangeValue(forKey: "isExecuting")
-        self.didChangeValue(forKey: "isFinished")
     }
     
     private func filter(image: UIImage?, filter: String?) -> UIImage?{

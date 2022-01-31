@@ -12,8 +12,9 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
+//        let layout = UICollectionViewFlowLayout()
+//        layout.scrollDirection = .vertical
+        let layout = PinterestLayout()
         let imagesVC = ImagesCollectionViewController(collectionViewLayout: layout)
         imagesVC.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
 
