@@ -11,9 +11,7 @@ import SwiftUI
 
 private let imagesCache = NSCache<NSString, UIImage>()
 
-class ImagesCollectionViewController: UICollectionViewController
-//, UICollectionViewDelegateFlowLayout
-{
+class ImagesCollectionViewController: UICollectionViewController{
     
     private let ref = Database
         .database(url: FirebaseConstants.databaseUrl)
@@ -56,10 +54,6 @@ class ImagesCollectionViewController: UICollectionViewController
         }
     }
     
-    //    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-    //        return items.count
-    //    }
-    //
     override func collectionView(_ collectionView: UICollectionView,
                                  numberOfItemsInSection section: Int) -> Int {
         return self.items.count
@@ -68,23 +62,9 @@ class ImagesCollectionViewController: UICollectionViewController
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
-        //        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.section].url)
         cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.item].url)
         return cell;
     }
-    
-    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-    //        return UIEdgeInsets.init(top: 1, left: 1, bottom: 1, right: 1)
-    //    }
-    
-    //    func collectionView(_ collectionView: UICollectionView,
-    //                        layout collectionViewLayout: UICollectionViewLayout,
-    //                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-    ////        let width = collectionView.bounds.width
-    ////        return CGSize(width: width, height: width)
-    //        let itemSize = (collectionView.frame.width - (collectionView.contentInset.left + collectionView.contentInset.right + 10)) / 2
-    //        return CGSize(width: itemSize, height: itemSize)
-    //    }
     
     private func fillInDB(){
         let imageURLs = [
@@ -108,29 +88,6 @@ class ImagesCollectionViewController: UICollectionViewController
 }
 
 extension ImagesCollectionViewController: PinterestLayoutDelegate {
-    //    private func imageDimenssions(url: String) -> String{
-    //        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
-    //            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
-    //                let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
-    //                let pixelHeight = imageProperties[kCGImagePropertyPixelHeight] as! Int
-    //                return "Width: \(pixelWidth), Height: \(pixelHeight)"
-    //            }
-    //        }
-    //        return "None"
-    //    }
-    
-//    private func imageHeight(url: String) -> CGFloat{
-//        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
-//            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
-//                return imageProperties[kCGImagePropertyPixelHeight] as! CGFloat
-//            }
-//        }
-//        return CGFloat(20)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, heightForImageAtIndexPath indexPath:IndexPath) -> CGFloat {
-//        return imageHeight(url: self.items[indexPath.item].url)
-//    }
     
     private func imageSize(url: String) -> CGSize{
         if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
