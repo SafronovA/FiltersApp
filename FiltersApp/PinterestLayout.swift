@@ -8,9 +8,9 @@
 import UIKit
 
 protocol PinterestLayoutDelegate: AnyObject {
-//    func collectionView(
-//        _ collectionView: UICollectionView,
-//        heightForImageAtIndexPath indexPath: IndexPath) -> CGFloat
+    //    func collectionView(
+    //        _ collectionView: UICollectionView,
+    //        heightForImageAtIndexPath indexPath: IndexPath) -> CGFloat
     
     func collectionView(
         _ collectionView: UICollectionView,
@@ -41,8 +41,11 @@ class PinterestLayout: UICollectionViewLayout {
     }
     
     override func prepare() {
+        super.prepare()
+        // MARK: clean cash to recalculate LayoutAttributes for each collectionView.reloadData()
+        self.cache.removeAll()
+        
         guard
-            cache.isEmpty,
             let collectionView = collectionView
         else {
             return
@@ -59,39 +62,41 @@ class PinterestLayout: UICollectionViewLayout {
         for item in 0..<collectionView.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: item, section: 0)
             
-            let photoSize = delegate?.collectionView(collectionView, sizeOfImageAtIndexPath: indexPath) ?? CGSize(width: columnWidth, height: columnWidth)
+            let photoSize = self.delegate?.collectionView(collectionView, sizeOfImageAtIndexPath: indexPath) ?? CGSize(width: columnWidth, height: columnWidth)
+            //            var photoSize = CGSize(width: 100, height: 100)
+            
             let cellHeight = columnWidth * (photoSize.height / photoSize.width)
-//            let height = cellPadding * 2 + cellHeight
+            //            let height = cellPadding * 2 + cellHeight
             let frame = CGRect(x: xOffset[column],
                                y: yOffset[column],
                                width: columnWidth,
                                height: cellHeight)
-            let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
+            let insetFrame = frame.insetBy(dx: self.cellPadding, dy: self.cellPadding)
             
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             attributes.frame = insetFrame
-            cache.append(attributes)
+            self.cache.append(attributes)
             
-            contentHeight = max(contentHeight, frame.maxY)
+            self.contentHeight = max(self.contentHeight, frame.maxY)
             yOffset[column] = yOffset[column] + cellHeight
             
-            column = column < (numberOfColumns - 1) ? (column + 1) : 0
+            column = column < (self.numberOfColumns - 1) ? (column + 1) : 0
         }
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-      var visibleLayoutAttributes: [UICollectionViewLayoutAttributes] = []
-      
-      for attribute in cache {
-        if attribute.frame.intersects(rect) {
-          visibleLayoutAttributes.append(attribute)
+        var visibleLayoutAttributes: [UICollectionViewLayoutAttributes] = []
+        
+        for attribute in cache {
+            if attribute.frame.intersects(rect) {
+                visibleLayoutAttributes.append(attribute)
+            }
         }
-      }
-      return visibleLayoutAttributes
+        return visibleLayoutAttributes
     }
-
+    
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-      return cache[indexPath.item]
+        return cache[indexPath.item]
     }
-
+    
 }

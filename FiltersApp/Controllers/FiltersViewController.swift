@@ -96,7 +96,7 @@ class FiltersViewController: UIViewController {
                                 .database(url: FirebaseConstants.databaseUrl)
                                 .reference(withPath: FirebaseConstants.pathToImageItems)
                                 .child(UUID().uuidString)
-                                .setValue(ImageItem(url: url).toAnyObject())
+                                .setValue(ImageItem(url: url, width: Int16(img.size.width), height: Int16(img.size.height)).toAnyObject())
                         }
                     }
                 })

@@ -8,18 +8,16 @@
 import UIKit
 import Firebase
 import SwiftUI
+import CoreData
 
 private let imagesCache = NSCache<NSString, UIImage>()
 
 class ImagesCollectionViewController: UICollectionViewController{
     
-    private var items: [ImageItem] = []
-    
     var viewModel: ImagesViewModelProtocol!{
         didSet {
             self.viewModel.imagesDidChange = { [weak self] viewModel in
-                guard let self = self, let images = viewModel.images else {return}
-                self.items = images
+                guard let self = self else {return}
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
@@ -29,24 +27,34 @@ class ImagesCollectionViewController: UICollectionViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel = ImagesViewModel()
+        self.viewModel = ImagesViewModel(appDelegate: UIApplication.shared.delegate as! AppDelegate)
         self.setupCollectionView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.getImages()
+        self.viewModel.loadImages()
     }
     
     override func collectionView(_ collectionView: UICollectionView,
                                  numberOfItemsInSection section: Int) -> Int {
-        return self.items.count
+        return viewModel.imageItems?.count ?? viewModel.imageEntities?.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCollectionViewCell.reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
-        cell.imageView.loadImageUseingUrlString(urlString: self.items[indexPath.item].url)
+        if(viewModel.imageItemsExist) {
+            let item = viewModel.imageItems![indexPath.item]
+            cell.imageView.loadImageUseingUrlString(urlString: item.url)
+        } else
+        if(viewModel.imageEntitiesExist) {
+            if let entity = viewModel.entityBy(objectID: viewModel.imageEntities![indexPath.item].objectID) {
+                DispatchQueue.main.async{
+                    cell.imageView.image = UIImage(data: entity.data)
+                }
+            }
+        }
         return cell;
     }
     
@@ -61,23 +69,21 @@ class ImagesCollectionViewController: UICollectionViewController{
 }
 
 extension ImagesCollectionViewController: PinterestLayoutDelegate {
-    
-    private func imageSize(url: String) -> CGSize{
-        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
-            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
-                return CGSize(width: imageProperties[kCGImagePropertyPixelWidth] as! CGFloat,
-                              height: imageProperties[kCGImagePropertyPixelHeight] as! CGFloat)
+    func collectionView(_ collectionView: UICollectionView, sizeOfImageAtIndexPath indexPath: IndexPath) -> CGSize {
+        if(viewModel.imageItemsExist){
+            if let item = viewModel.imageItems?[indexPath.item]{
+                return CGSize(width: Int(item.width), height: Int(item.height))
+            }
+        }
+        if(viewModel.imageEntitiesExist){
+            if let entity = viewModel.entityBy(objectID: viewModel.imageEntities![indexPath.item].objectID) {
+                return CGSize(width: Int(entity.width), height: Int(entity.height))
             }
         }
         return CGSize(width: 0, height: 0)
     }
     
-    func collectionView(_ collectionView: UICollectionView, sizeOfImageAtIndexPath indexPath: IndexPath) -> CGSize {
-        return imageSize(url: self.items[indexPath.item].url)
-        
-    }
 }
-
 class CustomImageView: UIImageView {
     
     var imageUrlString: String?
@@ -103,10 +109,28 @@ class CustomImageView: UIImageView {
                         // MARK: fix for the common bug when wrong Image is loaded in UICollectionViewCell
                         // For more details check "Swift: YouTube - How to Load Images Async in UICollectionView (Ep 6)"
                         self.image = downloadedImage
+                        self.saveImageInCoreData(url: urlString, image: downloadedImage)
                     }
                     imagesCache.setObject(downloadedImage, forKey: urlString as NSString)
                 }
             }
         }
     }
+    
+    private func saveImageInCoreData(url: String, image: UIImage){
+        let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        let viewContext = appDelegate.persistentContainer.newBackgroundContext()
+        guard let data = image.pngData() else {return}
+        let entity = Entity(context: viewContext)
+        entity.url = url
+        entity.data = data
+        entity.width = Int16(image.size.width)
+        entity.height = Int16(image.size.height)
+        do {
+            try viewContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
 }
+
