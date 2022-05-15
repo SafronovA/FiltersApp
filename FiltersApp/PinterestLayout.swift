@@ -8,10 +8,6 @@
 import UIKit
 
 protocol PinterestLayoutDelegate: AnyObject {
-    //    func collectionView(
-    //        _ collectionView: UICollectionView,
-    //        heightForImageAtIndexPath indexPath: IndexPath) -> CGFloat
-    
     func collectionView(
         _ collectionView: UICollectionView,
         sizeOfImageAtIndexPath indexPath: IndexPath) -> CGSize
@@ -63,10 +59,7 @@ class PinterestLayout: UICollectionViewLayout {
             let indexPath = IndexPath(item: item, section: 0)
             
             let photoSize = self.delegate?.collectionView(collectionView, sizeOfImageAtIndexPath: indexPath) ?? CGSize(width: columnWidth, height: columnWidth)
-            //            var photoSize = CGSize(width: 100, height: 100)
-            
             let cellHeight = columnWidth * (photoSize.height / photoSize.width)
-            //            let height = cellPadding * 2 + cellHeight
             let frame = CGRect(x: xOffset[column],
                                y: yOffset[column],
                                width: columnWidth,
