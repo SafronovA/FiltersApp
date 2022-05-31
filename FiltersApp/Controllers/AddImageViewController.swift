@@ -8,7 +8,6 @@
 import UIKit
 import Photos
 import PhotosUI
-import Firebase
 
 class AddImageViewController: UIViewController {
     
@@ -111,9 +110,11 @@ class AddImageViewController: UIViewController {
 extension AddImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
+        if
+            let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage,
+            let data = image.pngData(){
             //        if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerOriginalImage")] as? UIImage {
-            let vc: FiltersViewController = FiltersViewController(image: image)
+            let vc: FiltersViewController = FiltersViewController(imageData: data)
             self.navigationController?.pushViewController(vc, animated: true)
         }
         picker.dismiss(animated: true, completion: nil)

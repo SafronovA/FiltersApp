@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import Firebase
-import SwiftUI
 
 class FiltersViewController: UIViewController {
     
@@ -19,8 +17,18 @@ class FiltersViewController: UIViewController {
     
     private var filtersView: UIView?
     
-    init(image: UIImage){
-        imageView.image = image
+    private var heightMultiplier: CGFloat {
+        guard
+            let height = imageView.image?.size.height,
+            let width = imageView.image?.size.width
+        else {
+            return CGFloat(1)
+        }
+        return CGFloat(height/width)
+    }
+    
+    init(imageData: Data){
+        imageView.image = UIImage(data: imageData)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,9 +36,11 @@ class FiltersViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func updateImageView(img: UIImage) {
-        imageView.image! = img
+        DispatchQueue.main.async {[weak self] in
+            guard let self = self else{return}
+            self.imageView.image! = img
+        }
     }
     
     override func viewDidLoad() {
@@ -63,12 +73,12 @@ class FiltersViewController: UIViewController {
     }
     
     private func setupConstraints(){
-        imageView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.9).isActive = true
-        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
+        imageView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.95).isActive = true
+        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: heightMultiplier).isActive = true
         imageView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         imageView.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
-        guard let filtersView = filtersView else {return}
+        guard let filtersView = self.filtersView else {return}
         filtersView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
         filtersView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
         filtersView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10).isActive = true
@@ -78,29 +88,14 @@ class FiltersViewController: UIViewController {
     @objc private func showResult(){
         guard let img = imageView.image else {return}
         self.navigationController?.pushViewController(ResultViewController(image: img), animated: true)
-        self.uploadImage(img)
+        self.upload(image: img)
     }
     
-    private func uploadImage(_ img: UIImage){
+    private func upload(image: UIImage){
         DispatchQueue.global().async {
-            let storageRef = Storage.storage().reference().child(FirebaseConstants.pathToImages).child("image\(UUID().uuidString).png")
-            if let uploadData = img.pngData(){
-                storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
-                    if error != nil {                        return}
-                    storageRef.downloadURL { url, error in
-                        if let error = error {
-                            print(error)
-                        } else {
-                            guard let url = url?.absoluteString else {return}
-                            Database
-                                .database(url: FirebaseConstants.databaseUrl)
-                                .reference(withPath: FirebaseConstants.pathToImageItems)
-                                .child(UUID().uuidString)
-                                .setValue(ImageItem(url: url, width: Int16(img.size.width), height: Int16(img.size.height)).toAnyObject())
-                        }
-                    }
-                })
-            }
+            FirebaseService.shared.upload(
+                imageData: image.pngData(),
+                size: ((Float(image.size.width)), Float(image.size.height)))
         }
     }
 }

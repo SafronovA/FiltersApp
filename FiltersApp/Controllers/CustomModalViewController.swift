@@ -121,14 +121,14 @@ class CustomModalViewController: UIViewController {
         guard let urlString = self.inputField.text else {return}
         if(!urlString.isEmpty){
             self.activityIndicator.startAnimating()
-            let downloadImageOperation = DownloadImageOperation()
-            downloadImageOperation.qualityOfService = .userInitiated
-            downloadImageOperation.urlString = urlString
-            downloadImageOperation.start()
-            downloadImageOperation.completionBlock = { [weak self] in
+            let operation = DownloadDataOperation()
+            operation.qualityOfService = .userInitiated
+            operation.urlString = urlString
+            operation.start()
+            operation.completionBlock = { [weak self] in
                 guard
                     let self = self,
-                    let downloadedImage = downloadImageOperation.downloadedImage
+                    let downloadedData = operation.downloadedData
                 else {
                     DispatchQueue.main.async {
                         self?.activityIndicator.stopAnimating()
@@ -139,7 +139,7 @@ class CustomModalViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.activityIndicator.stopAnimating()
-                    let vc: FiltersViewController = FiltersViewController(image: downloadedImage)
+                    let vc: FiltersViewController = FiltersViewController(imageData: downloadedData)
                     guard let presentingVC = self.presentingViewController as? UINavigationController else {return}
                     self.animateDismissView()
                     presentingVC.pushViewController(vc, animated: true)

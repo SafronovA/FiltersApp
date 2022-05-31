@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8E039AEB2744291400692441 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E039AEA2744291400692441 /* ImageCollectionViewCell.swift */; };
+		8E1A80EE283BBA1000F5700B /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1A80ED283BBA1000F5700B /* CoreDataService.swift */; };
+		8E1A80F2283BEBAF00F5700B /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1A80F1283BEBAF00F5700B /* DatabaseService.swift */; };
 		8E2D918E27A143FC00C34305 /* PinterestLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2D918D27A143FC00C34305 /* PinterestLayout.swift */; };
-		8E344E3627859CED0038979E /* DownloadImageOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E344E3527859CEC0038979E /* DownloadImageOperation.swift */; };
 		8E37D23A274AA5FE001C31BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */; };
 		8E37D23D274AAB4C001C31BD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8E37D23C274AAB4C001C31BD /* FirebaseAnalytics */; };
 		8E37D23F274AAB4C001C31BD /* FirebaseAnalyticsSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 8E37D23E274AAB4C001C31BD /* FirebaseAnalyticsSwift-Beta */; };
@@ -41,6 +42,7 @@
 		8E4B6D5E2758CE0D0001343C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B6D5D2758CE0D0001343C /* Constants.swift */; };
 		8E4B6D60275A167D0001343C /* CustomModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4B6D5F275A167D0001343C /* CustomModalViewController.swift */; };
 		8E521C08274FC5FB0019D1DC /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E521C07274FC5FB0019D1DC /* FiltersViewController.swift */; };
+		8E5609FA283EA529004837B4 /* DownloadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5609F9283EA529004837B4 /* DownloadDataOperation.swift */; };
 		8E58BBD0273BBB28001B44D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E58BBCF273BBB28001B44D6 /* AppDelegate.swift */; };
 		8E58BBD2273BBB28001B44D6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E58BBD1273BBB28001B44D6 /* SceneDelegate.swift */; };
 		8E58BBD4273BBB28001B44D6 /* ImagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E58BBD3273BBB28001B44D6 /* ImagesCollectionViewController.swift */; };
@@ -61,13 +63,15 @@
 
 /* Begin PBXFileReference section */
 		8E039AEA2744291400692441 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		8E1A80ED283BBA1000F5700B /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		8E1A80F1283BEBAF00F5700B /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		8E2D918D27A143FC00C34305 /* PinterestLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayout.swift; sourceTree = "<group>"; };
-		8E344E3527859CEC0038979E /* DownloadImageOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImageOperation.swift; sourceTree = "<group>"; };
 		8E37D239274AA5FE001C31BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8E37D274274B9845001C31BD /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		8E4B6D5D2758CE0D0001343C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E4B6D5F275A167D0001343C /* CustomModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModalViewController.swift; sourceTree = "<group>"; };
 		8E521C07274FC5FB0019D1DC /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		8E5609F9283EA529004837B4 /* DownloadDataOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDataOperation.swift; sourceTree = "<group>"; };
 		8E58BBCC273BBB28001B44D6 /* FiltersApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiltersApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E58BBCF273BBB28001B44D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E58BBD1273BBB28001B44D6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +129,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E1A80EC283BB9F400F5700B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8E1A80ED283BBA1000F5700B /* CoreDataService.swift */,
+				8E1A80F1283BEBAF00F5700B /* DatabaseService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		8E37D272274B9767001C31BD /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +181,7 @@
 		8E58BBCE273BBB28001B44D6 /* FiltersApp */ = {
 			isa = PBXGroup;
 			children = (
+				8E1A80EC283BB9F400F5700B /* Services */,
 				8ED14B2528188E7F00501BDC /* ViewModels */,
 				8EF5BBD427A8128400D040E7 /* Operations */,
 				8E7467982754006F00070E7F /* Cells */,
@@ -208,7 +222,7 @@
 			children = (
 				8E74679D2754328A00070E7F /* FilterOperation.swift */,
 				8EFE557A27A5D7D700555E5D /* AsyncOperation.swift */,
-				8E344E3527859CEC0038979E /* DownloadImageOperation.swift */,
+				8E5609F9283EA529004837B4 /* DownloadDataOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -323,7 +337,9 @@
 				8E4B6D60275A167D0001343C /* CustomModalViewController.swift in Sources */,
 				8E039AEB2744291400692441 /* ImageCollectionViewCell.swift in Sources */,
 				8E58BBD0273BBB28001B44D6 /* AppDelegate.swift in Sources */,
+				8E1A80EE283BBA1000F5700B /* CoreDataService.swift in Sources */,
 				8E58BBE4273BD228001B44D6 /* AddImageViewController.swift in Sources */,
+				8E1A80F2283BEBAF00F5700B /* DatabaseService.swift in Sources */,
 				8E74679A275400DB00070E7F /* FilterCollectionViewCell.swift in Sources */,
 				8E4B6D5E2758CE0D0001343C /* Constants.swift in Sources */,
 				8EE452FD2757D81800C18EF8 /* ResultViewController.swift in Sources */,
@@ -331,7 +347,7 @@
 				8EE452FF2757E4F800C18EF8 /* TabBarController.swift in Sources */,
 				8E2D918E27A143FC00C34305 /* PinterestLayout.swift in Sources */,
 				8EFE557B27A5D7D700555E5D /* AsyncOperation.swift in Sources */,
-				8E344E3627859CED0038979E /* DownloadImageOperation.swift in Sources */,
+				8E5609FA283EA529004837B4 /* DownloadDataOperation.swift in Sources */,
 				8E74679C2754279200070E7F /* FiltersCollectionViewController.swift in Sources */,
 				8E6F647F282C34F4004211A2 /* Model.xcdatamodeld in Sources */,
 				8E6F6482282C352A004211A2 /* Entity+CoreDataClass.swift in Sources */,
