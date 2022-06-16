@@ -39,7 +39,7 @@ class FiltersViewController: UIViewController {
     func updateImageView(img: UIImage) {
         DispatchQueue.main.async {[weak self] in
             guard let self = self else{return}
-            self.imageView.image! = img
+            self.imageView.image = img
         }
     }
     
@@ -93,8 +93,8 @@ class FiltersViewController: UIViewController {
     
     private func upload(image: UIImage){
         DispatchQueue.global().async {
-            FirebaseService.shared.upload(
-                imageData: image.pngData(),
+            FirebaseService.shared.save(
+                data: image.pngData(),
                 size: ((Float(image.size.width)), Float(image.size.height)))
         }
     }

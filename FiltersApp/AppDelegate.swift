@@ -34,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataService.shared.saveViewContext()
+        if let coreData = CoreDataService.shared as? CoreDataService{
+            coreData.saveViewContext()
+        }
     }
 }

@@ -8,17 +8,9 @@
 import Foundation
 import CoreData
 
-protocol CoreDataServiceProtocol: AnyObject{
-    func saveViewContext()
-    func saveImage(url: String, imageData: Data?, size: (width: Float, height: Float))
-    func entityBy(objectID: NSManagedObjectID) -> Entity?
-    func fetch() -> [Entity]?
-    func clear()
-}
-
-final class CoreDataService: CoreDataServiceProtocol{
+final class CoreDataService: ImagesSourceProtocol{
     
-    static var shared: CoreDataServiceProtocol = {
+    static var shared: ImagesSourceProtocol = {
         return CoreDataService()
     }()
     
@@ -46,11 +38,10 @@ final class CoreDataService: CoreDataServiceProtocol{
         }
     }
     
-    func saveImage(url: String, imageData: Data?, size: (width: Float, height: Float)){
-        guard let data = imageData else {return}
+    func save(data: Data?, size: (width: Float, height: Float)){
+        guard let data = data else {return}
         let viewContext = persistentContainer.newBackgroundContext()
         let entity = Entity(context: viewContext)
-        entity.url = url
         entity.data = data
         entity.width = Int16(size.width)
         entity.height = Int16(size.height)
@@ -61,11 +52,13 @@ final class CoreDataService: CoreDataServiceProtocol{
         }
     }
     
-    func entityBy(objectID: NSManagedObjectID) -> Entity? {
-        return persistentContainer.viewContext.object(with: objectID) as? Entity
+    func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void){
+        guard case .cd(let id) = key else {return}
+        guard let entity = entityBy(objectID: id) else{return}
+        onCompletion(entity.data)
     }
-    
-    func fetch() -> [Entity]?{
+
+    func getAll() -> [Entity]?{
         var entities: [Entity]?
         do {
             entities = try persistentContainer.viewContext.fetch(Entity.fetchRequest())
@@ -75,6 +68,23 @@ final class CoreDataService: CoreDataServiceProtocol{
         return entities
     }
     
+    func getAll(onCompletion: @escaping ([Any]) -> Void){
+        var entities: [Entity]?
+        do {
+            entities = try persistentContainer.viewContext.fetch(Entity.fetchRequest())
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        guard let entities = entities else {return}
+        onCompletion(entities)
+    }
+      
+    func getImageSize(by key: ImageSource) -> Size{
+        guard case .cd(let id) = key else {return (0, 0)}
+        guard let entity = entityBy(objectID: id) else {return (0, 0)}
+        return (width: Int(entity.width), height: Int(entity.height))
+    }
+    
     func clear(){
         do {
             try persistentContainer.viewContext.execute(Entity.batchDeleteRequest())
@@ -82,6 +92,10 @@ final class CoreDataService: CoreDataServiceProtocol{
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
+    }
+    
+    private func entityBy(objectID: NSManagedObjectID) -> Entity? {
+        return persistentContainer.viewContext.object(with: objectID) as? Entity
     }
 }
 
