@@ -307,7 +307,6 @@ extension CustomModalViewController {
             
             // Raise the modal view to the height of the keyboard
             if(keyboardOverlap != 0){
-                // FIXME: keyboardWillShowNotification is called after we enter first symbol...Why???
                 self.containerViewBottomConstraint?.constant = -keyboardOverlap
             }
             

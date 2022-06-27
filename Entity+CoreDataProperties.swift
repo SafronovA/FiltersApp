@@ -21,8 +21,8 @@ extension Entity {
     }
 
     @NSManaged public var data: Data
-    @NSManaged public var width: Int16
-    @NSManaged public var height: Int16
+    @NSManaged public var width: Float
+    @NSManaged public var height: Float
 
 }
 

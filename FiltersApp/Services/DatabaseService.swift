@@ -11,12 +11,12 @@ import Firebase
 protocol ImagesSourceProtocol: AnyObject{
     func getAll(onCompletion: @escaping ([Any]) -> Void)
     func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void)
-    func getImageSize(by key: ImageSource) -> Size
-    func save(data: Data?, size: (width: Float, height: Float))
+    func save(data: Data?, size: ImageSize)
+    func save(items: [ImageItem])
     func clear()
 }
 
-typealias Size = (width: Int, height: Int)
+typealias ImageSize = (width: Float, height: Float)
 
 final class FirebaseService: ImagesSourceProtocol{
     
@@ -28,19 +28,13 @@ final class FirebaseService: ImagesSourceProtocol{
         return db.reference(withPath: FirebaseConstants.pathToImageItems)
     }
     private var refObservers: [DatabaseHandle] = []
-
-    static var shared: ImagesSourceProtocol = {
-        return FirebaseService()
-    }()
-    
-    private init(){}
     
     func getAll(onCompletion: @escaping ([Any]) -> Void){
         let completed = self.ref.observe(.value, with: { snapshot in
-            var newItems: [ImageItem] = []
+            var newItems: [FirebaseImageItem] = []
             for child in snapshot.children {
                 if let snapshot = child as? DataSnapshot,
-                   let imageItem = ImageItem(snapshot: snapshot) {
+                   let imageItem = FirebaseImageItem(snapshot: snapshot) {
                     newItems.append(imageItem)
                 }
             }
@@ -50,8 +44,7 @@ final class FirebaseService: ImagesSourceProtocol{
     }
     
     func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void){
-        guard case .db(let imageItem) = key else {return}
-        let url = imageItem.url
+        guard case .url(let url) = key else {return}
         if let dataFromCache: NSData = self.imagesCache.object(forKey: url as NSString){
             onCompletion(dataFromCache as Data)
         } else {
@@ -70,12 +63,7 @@ final class FirebaseService: ImagesSourceProtocol{
         }
     }
     
-    func getImageSize(by key: ImageSource) -> Size{
-        guard case .db(let item) = key else {return (0, 0)}
-        return (width: Int(item.width), height: Int(item.height))
-    }
-    
-    func save(data: Data?, size: (width: Float, height: Float)){
+    func save(data: Data?, size: ImageSize){
         let storageRef = Storage.storage().reference().child(FirebaseConstants.pathToImages).child("image\(UUID().uuidString).png")
         if let imageData = data{
             storageRef.putData(imageData, metadata: nil, completion: { (metadata, error) in
@@ -89,15 +77,19 @@ final class FirebaseService: ImagesSourceProtocol{
                             .database(url: FirebaseConstants.databaseUrl)
                             .reference(withPath: FirebaseConstants.pathToImageItems)
                             .child(UUID().uuidString)
-                            .setValue(ImageItem(url: url, width: Int16(size.width), height: Int16(size.height)).toAnyObject())
+                            .setValue(FirebaseImageItem(url: url, width: size.width, height: size.height).toAnyObject())
                     }
                 }
             })
         }
     }
     
-    func clear(){}
+    func save(items: [ImageItem]){}
     
+    func clear(){}
+}
+
+extension FirebaseService {
     //MARK: call fillInDB() to fill in database with initial data
     //    private func fillInDB(){
     //        let imageURLsWithSize = [
@@ -131,11 +123,4 @@ final class FirebaseService: ImagesSourceProtocol{
     //            }
     //        }
     //    }
-}
-
-extension FirebaseService: NSCopying {
-    
-    func copy(with zone: NSZone? = nil) -> Any {
-        return self
-    }
 }

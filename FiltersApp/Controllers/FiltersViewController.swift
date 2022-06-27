@@ -93,7 +93,7 @@ class FiltersViewController: UIViewController {
     
     private func upload(image: UIImage){
         DispatchQueue.global().async {
-            FirebaseService.shared.save(
+            FirebaseService().save(
                 data: image.pngData(),
                 size: ((Float(image.size.width)), Float(image.size.height)))
         }
