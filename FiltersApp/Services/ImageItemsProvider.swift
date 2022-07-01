@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 protocol ImageItemsProvidable: AnyObject {
     var itemsDidChange: (() -> Void)? { get set }
@@ -55,14 +54,6 @@ final class ImageItemsProvider: ImageItemsProvidable{
         case .url(_):
             firebaseService.get(by: item.source, onCompletion: {downloadedData in
                 completion(downloadedData)
-                DispatchQueue.global().async {[weak self] in
-                    guard let self = self else {return}
-                    if let downloadedImage = UIImage(data: downloadedData){
-                        self.coreDataService.save(
-                            data: downloadedData,
-                            size: ((Float(downloadedImage.size.width)), Float(downloadedImage.size.height)))
-                    }
-                }
             })
         case .data(_):
             coreDataService.get(by: item.source, onCompletion: completion)

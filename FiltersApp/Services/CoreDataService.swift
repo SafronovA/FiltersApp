@@ -19,7 +19,7 @@ final class CoreDataService: ImagesSourceProtocol{
         })
         return container
     }()
-    
+        
     func saveViewContext() {
         let context: NSManagedObjectContext = persistentContainer.viewContext
         if context.hasChanges {
@@ -53,8 +53,8 @@ final class CoreDataService: ImagesSourceProtocol{
         }
     }
     
-    func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void){
-        guard case .data(let data) = key else {return}
+    func get(by source: ImageSource, onCompletion: @escaping (Data) -> Void){
+        guard case .data(let data) = source else {return}
         onCompletion(data)
     }
     

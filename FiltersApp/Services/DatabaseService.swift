@@ -7,10 +7,11 @@
 
 import Foundation
 import Firebase
+import UIKit
 
 protocol ImagesSourceProtocol: AnyObject{
     func getAll(onCompletion: @escaping ([Any]) -> Void)
-    func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void)
+    func get(by source: ImageSource, onCompletion: @escaping (Data) -> Void)
     func save(data: Data?, size: ImageSize)
     func save(items: [ImageItem])
     func clear()
@@ -43,8 +44,8 @@ final class FirebaseService: ImagesSourceProtocol{
         self.refObservers.append(completed)
     }
     
-    func get(by key: ImageSource, onCompletion: @escaping (Data) -> Void){
-        guard case .url(let url) = key else {return}
+    func get(by source: ImageSource, onCompletion: @escaping (Data) -> Void){
+        guard case .url(let url) = source else {return}
         if let dataFromCache: NSData = self.imagesCache.object(forKey: url as NSString){
             onCompletion(dataFromCache as Data)
         } else {
@@ -58,7 +59,7 @@ final class FirebaseService: ImagesSourceProtocol{
                     let downloadedData = operation.downloadedData
                 else {return}
                 onCompletion(downloadedData)
-                self.imagesCache.setObject(NSData(data: downloadedData), forKey: url as NSString)
+                self.saveDownloadedData(downloadedData, key: url as NSString)
             }
         }
     }
@@ -87,6 +88,17 @@ final class FirebaseService: ImagesSourceProtocol{
     func save(items: [ImageItem]){}
     
     func clear(){}
+    
+    private func saveDownloadedData(_ data: Data, key: NSString){
+        self.imagesCache.setObject(NSData(data: data), forKey: key as NSString)
+        DispatchQueue.global().async {
+            if let downloadedImage = UIImage(data: data){
+                CoreDataService().save(
+                    data: data,
+                    size: ((Float(downloadedImage.size.width)), Float(downloadedImage.size.height)))
+            }
+        }
+    }
 }
 
 extension FirebaseService {
