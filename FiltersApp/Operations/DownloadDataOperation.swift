@@ -1,15 +1,15 @@
 //
-//  DownloadImageOperation.swift
+//  DownloadDataOperation.swift
 //  FiltersApp
 //
-//  Created by Aliaksei Safronau EPAM on 5.01.22.
+//  Created by Aliaksei Safronau EPAM on 25.05.22.
 //
 
-import UIKit
+import Foundation
 
-class DownloadImageOperation: AsyncOperation {
+class DownloadDataOperation: AsyncOperation {
     var urlString: String?
-    var downloadedImage: UIImage?
+    var downloadedData: Data?
     
     override func main() {
         DispatchQueue.global().async {[weak self] in
@@ -24,13 +24,12 @@ class DownloadImageOperation: AsyncOperation {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard
                     let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                    let data = data, error == nil,
-                    let img = UIImage(data: data)
+                    let data = data, error == nil
                 else {
                     self.finish()
                     return
                 }
-                self.downloadedImage = img
+                self.downloadedData = data
                 self.finish()
             }.resume()
         }

@@ -6,44 +6,52 @@
 //
 
 import Foundation
-import Firebase
+import CoreData
+import UIKit
 
 protocol ImagesViewModelProtocol: AnyObject {
-    var images: [ImageItem]? { get }
-    var imagesDidChange: ((ImagesViewModelProtocol) -> ())? { get set }
-    func getImages()
+    var imagesDidChange: (() -> Void)? { get set }
+    var imagesCount: Int { get }
+    func loadImages()
+    func loadImage(for: IndexPath, completion: @escaping (Data) -> Void)
+    func sizeOfImage(at: IndexPath) -> CGSize
 }
 
-class ImagesViewModel: ImagesViewModelProtocol {
-    private let ref = Database
-        .database(url: FirebaseConstants.databaseUrl)
-        .reference(withPath: FirebaseConstants.pathToImageItems)
-    private var refObservers: [DatabaseHandle] = []
+final class ImagesViewModel: ImagesViewModelProtocol {
     
-    var images: [ImageItem]? {
-        didSet {
-            self.imagesDidChange?(self)
+    private let imagesProvider: ImageItemsProvidable!
+    
+    init(){
+        self.imagesProvider = ImageItemsProvider()
+        self.imagesProvider.itemsDidChange = { [weak self] in
+            guard let self = self else {return}
+            self.imagesDidChange?()
         }
     }
     
-    var imagesDidChange: ((ImagesViewModelProtocol) -> ())?
+    var imagesDidChange: (() -> Void)?
     
-    public func getImages(){
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else {return}
-            let completed = self.ref
-                .observe(.value, with: { snapshot in
-                    var newItems: [ImageItem] = []
-                    for child in snapshot.children {
-                        if
-                            let snapshot = child as? DataSnapshot,
-                            let imageItem = ImageItem(snapshot: snapshot) {
-                            newItems.append(imageItem)
-                        }
-                    }
-                    self.images = newItems
-                })
-            self.refObservers.append(completed)
-        }
+    var imagesCount: Int {
+        return self.imagesProvider.count
+    }
+    
+    func loadImages(){
+        self.imagesProvider.fetch()
+    }
+    
+    func loadImage(for indexPath: IndexPath, completion: @escaping (Data) -> Void){
+        guard let item = self.imagesProvider.items?[indexPath.item] else {return}
+        self.imagesProvider.loadImageData(item: item, completion: completion)
+    }
+    
+    func sizeOfImage(at indexPath: IndexPath) -> CGSize{
+        guard let item = self.imagesProvider.items?[indexPath.item] else {return CGSize.zero}
+        return CGSize(from: self.imagesProvider.sizeOf(item))
+    }
+}
+
+extension CGSize {
+    init(from: ImageSize){
+        self.init(width: CGFloat(from.width), height: CGFloat(from.height))
     }
 }

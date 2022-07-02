@@ -11,8 +11,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "ImageCell"
     
-    let imageView: CustomImageView = {
-        let im = CustomImageView()
+    var indexPath: IndexPath?
+    
+    let imageView: UIImageView = {
+        let im = UIImageView()
         im.translatesAutoresizingMaskIntoConstraints = false
         im.contentMode = .scaleAspectFill
         im.clipsToBounds = true
@@ -30,10 +32,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with data: Data?){
+        self.imageView.image = (data != nil) ? UIImage(data: data!): nil
+    }
+    
     private func setupConstraints(){
-        imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
-        imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        self.imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        self.imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
+        self.imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
+        self.imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
 }
